@@ -48,6 +48,10 @@ function Register() {
     const mailFormat = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
     const phoneFormat = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
     if (
+      registerInfo.first === undefined ||
+      registerInfo.last === undefined ||
+      registerInfo.phone_number === undefined ||
+      registerInfo.password === undefined ||
       !registerInfo.first.trim() ||
       !registerInfo.last.trim() ||
       !registerInfo.phone_number.trim() ||
