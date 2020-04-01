@@ -137,7 +137,7 @@ function Register() {
               label="password"
             />
             <TextField
-              type="password2"
+              type="password"
               onChange={handleChange}
               name="password2"
               fullWidth
