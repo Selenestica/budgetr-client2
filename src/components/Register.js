@@ -1,29 +1,85 @@
 import React, { useState } from "react";
 import classes from "./Register.module.css";
 import { TextField } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 
 function Register() {
   const [registerInfo, setRegisterInfo] = useState([]);
+  const [passwordMatch, setPasswordMatch] = useState(false);
+  const [missingField, setMissingField] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [invalidPhone, setInvalidPhone] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
-  const handleChange = e => {
+  const handleChange = async e => {
     setRegisterInfo({
       ...registerInfo,
       [e.target.name]: e.target.value
     });
   };
 
+  /* 
+  function phonenumber(inputtxt)
+{
+  var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  if((inputtxt.value.match(phoneno))
+        {
+      return true;
+        }
+      else
+        {
+        alert("message");
+        return false;
+        }
+}
+ */
+
+  const validatePhone = number => {
+    const phoneFormat = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    if (number.match(phoneFormat)) {
+      return number;
+    } else {
+    }
+  };
+
   const onHandleRegister = () => {
-    const url = "http://localhost:3301/add-user";
+    const url = "http://localhost:3301/users/register";
     const mailFormat = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
-    try {
-      if (registerInfo.email.match(mailFormat)) {
-        axios.post(url, registerInfo);
+    const phoneFormat = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    if (
+      !registerInfo.first.trim() ||
+      !registerInfo.last.trim() ||
+      !registerInfo.phone_number.trim() ||
+      !registerInfo.password.trim()
+    ) {
+      setMissingField(true);
+    } else {
+      if (registerInfo.password === registerInfo.password2) {
+        try {
+          if (
+            registerInfo.email.match(mailFormat) &&
+            registerInfo.phone_number.match(phoneFormat)
+          ) {
+            axios.post(url, registerInfo);
+            setEmailSent(true);
+          } else if (
+            !registerInfo.email.match(mailFormat) &&
+            !registerInfo.phone_number.match(phoneFormat)
+          ) {
+            setInvalidEmail(true);
+            setInvalidPhone(true);
+          } else if (!registerInfo.email.match(mailFormat)) {
+            setInvalidEmail(true);
+          } else if (!registerInfo.phone_number.match(phoneFormat)) {
+            setInvalidPhone(true);
+          }
+        } catch (err) {
+          console.log(err);
+        }
       } else {
-        console.log("Invalid email!");
+        setPasswordMatch(true);
       }
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -53,14 +109,6 @@ function Register() {
               label="last name"
             />
             <TextField
-              type="text"
-              onChange={handleChange}
-              name="display_name"
-              fullWidth
-              id="standard-basic"
-              label="what name do you prefer to go by?"
-            />
-            <TextField
               type="email"
               onChange={handleChange}
               name="email"
@@ -84,7 +132,41 @@ function Register() {
               id="standard-basic"
               label="password"
             />
+            <TextField
+              type="password2"
+              onChange={handleChange}
+              name="password2"
+              fullWidth
+              id="standard-basic"
+              label="password"
+            />
             <button onClick={onHandleRegister}>Register</button>
+            {passwordMatch === true && (
+              <Alert severity="error">Passwords do not match!</Alert>
+            )}
+            {missingField === true && (
+              <Alert severity="error">
+                One or more fields above is missing required information.
+              </Alert>
+            )}
+            {invalidEmail === true && (
+              <Alert severity="error">
+                Invalid email. Please make sure to give a valid email address.
+              </Alert>
+            )}
+            {invalidPhone === true && (
+              <Alert severity="error">
+                Invalid phone number. Please make sure to give a ten digit phone
+                number, starting with your three digit area code.
+              </Alert>
+            )}
+            {emailSent === true && (
+              <Alert severity="success">
+                A verification email has been sent to you, escorted by Budgetr's
+                most elite cyborg bodyguards. Please check your inbox to
+                complete registration. See you soon!
+              </Alert>
+            )}
           </div>
         </div>
       </div>
