@@ -16,7 +16,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
 // COMPONENT IMPORTS
-import Register from "./components/Register";
+import Register from "./components/Register/Register";
 import Login from "./components/Login";
 import Expenses from "./components/Expenses";
 import Income from "./components/Income";
