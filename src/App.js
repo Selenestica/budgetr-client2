@@ -1,17 +1,53 @@
-// DEPENDENCIES
-import React from "react";
+/*
+import { setAuthenticationHeader } from './utils/authentication'
 
-function App() {
-  return (
-    <>
-      <div className="app-container">
-        <h1>Home</h1>
-        <div className="row">
-          <div className="col"></div>
-        </div>
-      </div>
-    </>
-  );
+const token = localStorage.getItem('jsonwebtoken')
+setAuthenticationHeader(token)
+*/
+
+// DEPENDENCIES
+import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
+
+// COMPONENT IMPORTS
+import Landing from "./components/Landing";
+import Register from "./components/Register/Register";
+import Login from "./components/Login";
+import Expenses from "./components/Expenses";
+import Income from "./components/Income";
+import SavingGoals from "./components/SavingGoals";
+import AccountsDisplay from "./components/AccountsDisplay";
+import Layout from "./components/Layout";
+
+// CSS IMPORTS
+import "./css/index.css";
+import "./css/Income.css";
+import "./css/App.css";
+import "./css/Nav-bar.css";
+import "materialize-css/dist/css/materialize.min.css";
+import "./css/SavingGoals.css";
+import "./css/Login.css";
+
+class App extends Component {
+  render() {
+    let routes = (
+      <Switch>
+        <Route exact path="/" component={Landing} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/your-accounts" component={AccountsDisplay} />
+        <Route exact path="/your-spending" component={Expenses} />
+        <Route exact path="/your-income" component={Income} />
+        <Route exact path="/your-saving" component={SavingGoals} />
+      </Switch>
+    );
+
+    return (
+      <>
+        <Layout>{routes}</Layout>
+      </>
+    );
+  }
 }
 
 export default App;
