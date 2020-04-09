@@ -12,35 +12,11 @@ function Register() {
   const [invalidPhone, setInvalidPhone] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
-  const handleChange = async e => {
+  const handleChange = async (e) => {
     setRegisterInfo({
       ...registerInfo,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-  };
-
-  /* 
-  function phonenumber(inputtxt)
-{
-  var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-  if((inputtxt.value.match(phoneno))
-        {
-      return true;
-        }
-      else
-        {
-        alert("message");
-        return false;
-        }
-}
- */
-
-  const validatePhone = number => {
-    const phoneFormat = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-    if (number.match(phoneFormat)) {
-      return number;
-    } else {
-    }
   };
 
   const onHandleRegister = () => {
