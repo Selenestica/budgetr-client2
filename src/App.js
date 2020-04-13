@@ -18,6 +18,7 @@ import Income from "./components/Income";
 import SavingGoals from "./components/SavingGoals";
 import AccountsDisplay from "./components/AccountsDisplay";
 import Layout from "./components/Layout";
+import VerifyEmail from "./components/VerifyEmail/VerifyEmail";
 
 // CSS IMPORTS
 import "./css/index.css";
@@ -39,6 +40,7 @@ class App extends Component {
         <Route exact path="/your-spending" component={Expenses} />
         <Route exact path="/your-income" component={Income} />
         <Route exact path="/your-saving" component={SavingGoals} />
+        <Route path="/verify-email/:email/:token" component={VerifyEmail} />
       </Switch>
     );
 
