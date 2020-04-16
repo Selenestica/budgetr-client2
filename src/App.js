@@ -12,13 +12,13 @@ import { Route, Switch } from "react-router-dom";
 // COMPONENT IMPORTS
 import Landing from "./components/Landing";
 import Register from "./components/Register/Register";
-import Login from "./components/Login";
 import Expenses from "./components/Expenses";
 import Income from "./components/Income";
 import SavingGoals from "./components/SavingGoals";
 import AccountsDisplay from "./components/AccountsDisplay";
 import Layout from "./components/Layout";
 import VerifyEmail from "./components/VerifyEmail/VerifyEmail";
+import SignIn from "./components/SignIn";
 
 // CSS IMPORTS
 import "./css/index.css";
@@ -35,7 +35,7 @@ class App extends Component {
       <Switch>
         <Route exact path="/" component={Landing} />
         <Route exact path="/register" component={Register} />
-        <Route exact path="/login" component={Login} />
+        <Route exact path="/login" component={SignIn} />
         <Route exact path="/your-accounts" component={AccountsDisplay} />
         <Route exact path="/your-spending" component={Expenses} />
         <Route exact path="/your-income" component={Income} />
