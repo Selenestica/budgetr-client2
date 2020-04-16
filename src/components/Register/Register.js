@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import classes from "./Register.module.css";
 import { TextField } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
+import Alerts from "./Alerts";
 import axios from "axios";
 
 function Register() {
@@ -127,39 +127,14 @@ function Register() {
               label="password"
             />
             <button onClick={onHandleRegister}>Register</button>
-            {passwordMatch === true && (
-              <Alert severity="error">Passwords do not match!</Alert>
-            )}
-            {missingField === true && (
-              <Alert severity="error">
-                One or more fields above is missing required information.
-              </Alert>
-            )}
-            {invalidEmail === true && (
-              <Alert severity="error">
-                Invalid email. Please make sure to give a valid email address.
-              </Alert>
-            )}
-            {invalidPhone === true && (
-              <Alert severity="error">
-                Invalid phone number. Please make sure to give a ten digit phone
-                number, starting with your three digit area code.
-              </Alert>
-            )}
-            {emailSent === true && (
-              <Alert severity="success">
-                A verification email has been sent to you, escorted by Budgetr's
-                most elite cyborg bodyguards. Please check your inbox to
-                complete registration. See you soon!
-              </Alert>
-            )}
-            {invalidPassword === true && (
-              <Alert severity="error">
-                Your password must be 10 to 30 characters long, contain at least
-                one number, one lowercase letter, one uppercase letter, and one
-                special character.
-              </Alert>
-            )}
+            <Alerts
+              passwordMatch={passwordMatch}
+              invalidPassword={invalidPassword}
+              missingField={missingField}
+              invalidPhone={invalidPhone}
+              emailSent={emailSent}
+              invalidEmail={invalidEmail}
+            />
           </div>
         </div>
       </div>
