@@ -11,6 +11,7 @@ function Register() {
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPhone, setInvalidPhone] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [invalidPassword, setInvalidPassword] = useState(false);
 
   const handleChange = async (e) => {
     setRegisterInfo({
@@ -23,11 +24,12 @@ function Register() {
     const url = "http://localhost:3301/users/register";
     const mailFormat = /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i;
     const phoneFormat = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    const passwordFormat = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{10,30}$/;
     if (
-      registerInfo.first === undefined ||
-      registerInfo.last === undefined ||
-      registerInfo.phone_number === undefined ||
-      registerInfo.password === undefined ||
+      !registerInfo.first ||
+      !registerInfo.last ||
+      !registerInfo.phone_number ||
+      !registerInfo.password ||
       !registerInfo.first.trim() ||
       !registerInfo.last.trim() ||
       !registerInfo.phone_number.trim() ||
@@ -35,30 +37,34 @@ function Register() {
     ) {
       setMissingField(true);
     } else {
-      if (registerInfo.password === registerInfo.password2) {
-        try {
-          if (
-            registerInfo.email.match(mailFormat) &&
-            registerInfo.phone_number.match(phoneFormat)
-          ) {
-            axios.post(url, registerInfo);
-            setEmailSent(true);
-          } else if (
-            !registerInfo.email.match(mailFormat) &&
-            !registerInfo.phone_number.match(phoneFormat)
-          ) {
-            setInvalidEmail(true);
-            setInvalidPhone(true);
-          } else if (!registerInfo.email.match(mailFormat)) {
-            setInvalidEmail(true);
-          } else if (!registerInfo.phone_number.match(phoneFormat)) {
-            setInvalidPhone(true);
+      if (registerInfo.password.match(passwordFormat)) {
+        if (registerInfo.password === registerInfo.password2) {
+          try {
+            if (
+              registerInfo.email.match(mailFormat) &&
+              registerInfo.phone_number.match(phoneFormat)
+            ) {
+              axios.post(url, registerInfo);
+              setEmailSent(true);
+            } else if (
+              !registerInfo.email.match(mailFormat) &&
+              !registerInfo.phone_number.match(phoneFormat)
+            ) {
+              setInvalidEmail(true);
+              setInvalidPhone(true);
+            } else if (!registerInfo.email.match(mailFormat)) {
+              setInvalidEmail(true);
+            } else if (!registerInfo.phone_number.match(phoneFormat)) {
+              setInvalidPhone(true);
+            }
+          } catch (err) {
+            console.log(err);
           }
-        } catch (err) {
-          console.log(err);
+        } else {
+          setPasswordMatch(true);
         }
       } else {
-        setPasswordMatch(true);
+        setInvalidPassword(true);
       }
     }
   };
@@ -145,6 +151,13 @@ function Register() {
                 A verification email has been sent to you, escorted by Budgetr's
                 most elite cyborg bodyguards. Please check your inbox to
                 complete registration. See you soon!
+              </Alert>
+            )}
+            {invalidPassword === true && (
+              <Alert severity="error">
+                Your password must be 10 to 30 characters long, contain at least
+                one number, one lowercase letter, one uppercase letter, and one
+                special character.
               </Alert>
             )}
           </div>
