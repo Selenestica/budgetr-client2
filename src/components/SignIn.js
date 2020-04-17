@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { setAuthenticationHeader } from "../utils/authentication";
+import { connect } from "react-redux";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -29,10 +30,36 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    cursor: "pointer",
+    backgroundColor: "whitesmoke",
   },
 }));
 
-export default function SignIn() {
+function SignIn(props) {
+  const [loginInfo, setLoginInfo] = useState([]);
+
+  const handleChange = (e) => {
+    setLoginInfo({
+      ...loginInfo,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const onHandleLogin = async () => {
+    const res = await axios.post(
+      "http://localhost:3301/users/login",
+      loginInfo
+    );
+    if (res.status === 200) {
+      const token = res.data.token;
+      localStorage.setItem("jsonwebtoken", token);
+      setAuthenticationHeader(token);
+      props.onLoginSuccess(token);
+    } else {
+      console.log("There was some kind of error :(");
+    }
+  };
+
   const classes = useStyles();
 
   return (
@@ -52,6 +79,7 @@ export default function SignIn() {
             required
             fullWidth
             id="email"
+            onChange={handleChange}
             label="Email Address"
             name="email"
             autoComplete="email"
@@ -62,25 +90,16 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
+            onChange={handleChange}
             name="password"
             label="Password"
             type="password"
             id="password"
             autoComplete="current-password"
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+          <div className={classes.submit} onClick={onHandleLogin}>
             Sign In
-          </Button>
+          </div>
           <Grid container>
             <Grid item xs>
               <Link href="#" variant="body2">
@@ -88,7 +107,7 @@ export default function SignIn() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
@@ -98,3 +117,12 @@ export default function SignIn() {
     </Container>
   );
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLoginSuccess: (token) =>
+      dispatch({ type: "ON_LOGIN_SUCCESS", token: token }),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(SignIn);
