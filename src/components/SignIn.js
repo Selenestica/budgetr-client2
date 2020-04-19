@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { Alert } from "@material-ui/lab";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 function SignIn(props) {
   const [loginInfo, setLoginInfo] = useState([]);
+  const [loginFailed, setLoginFailed] = useState(false);
 
   const handleChange = (e) => {
     setLoginInfo({
@@ -46,17 +47,23 @@ function SignIn(props) {
   };
 
   const onHandleLogin = async () => {
-    const res = await axios.post(
-      "http://localhost:3301/users/login",
-      loginInfo
-    );
-    if (res.status === 200) {
-      const token = res.data.token;
-      localStorage.setItem("jsonwebtoken", token);
-      setAuthenticationHeader(token);
-      props.onLoginSuccess(token);
-    } else {
-      console.log("There was some kind of error :(");
+    try {
+      const res = await axios.post(
+        "http://localhost:3301/users/login",
+        loginInfo
+      );
+      if (res.status === 200) {
+        const token = res.data.token;
+        localStorage.setItem("jsonwebtoken", token);
+        setAuthenticationHeader(token);
+        props.onLoginSuccess(token);
+        window.location.href = "/your-accounts";
+      } else if (res.status === 500) {
+        console.log("There was some kind of error :(");
+        setLoginFailed(true);
+      }
+    } catch {
+      setLoginFailed(true);
     }
   };
 
@@ -97,6 +104,11 @@ function SignIn(props) {
             id="password"
             autoComplete="current-password"
           />
+          {loginFailed ? (
+            <Alert severity="error">
+              Your email or password was incorrect.
+            </Alert>
+          ) : null}
           <div className={classes.submit} onClick={onHandleLogin}>
             Sign In
           </div>
