@@ -1,13 +1,7 @@
-/*
-import { setAuthenticationHeader } from './utils/authentication'
-
-const token = localStorage.getItem('jsonwebtoken')
-setAuthenticationHeader(token)
-*/
-
 // DEPENDENCIES
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { setAuthenticationHeader } from "./utils/authentication";
 
 // COMPONENT IMPORTS
 import Landing from "./components/Landing";
@@ -29,6 +23,9 @@ import "materialize-css/dist/css/materialize.min.css";
 import "./css/SavingGoals.css";
 import "./css/Login.css";
 
+const token = localStorage.getItem("jsonwebtoken");
+setAuthenticationHeader(token);
+
 class App extends Component {
   render() {
     let routes = (
@@ -36,13 +33,25 @@ class App extends Component {
         <Route exact path="/" component={Landing} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/login" component={SignIn} />
-        <Route exact path="/your-accounts" component={AccountsDisplay} />
-        <Route exact path="/your-spending" component={Expenses} />
-        <Route exact path="/your-income" component={Income} />
-        <Route exact path="/your-saving" component={SavingGoals} />
         <Route path="/verify-email/:email/:token" component={VerifyEmail} />
+        <Redirect to="/" />
       </Switch>
     );
+
+    if (token) {
+      routes = (
+        <Switch>
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/register" component={Register} />
+          <Route exact path="/login" component={SignIn} />
+          <Route path="/verify-email/:email/:token" component={VerifyEmail} />
+          <Route exact path="/your-accounts" component={AccountsDisplay} />
+          <Route exact path="/your-spending" component={Expenses} />
+          <Route exact path="/your-income" component={Income} />
+          <Route exact path="/your-saving" component={SavingGoals} />
+        </Switch>
+      );
+    }
 
     return (
       <>
