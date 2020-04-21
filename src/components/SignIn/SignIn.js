@@ -9,7 +9,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { setAuthenticationHeader } from "../utils/authentication";
+import { setAuthenticationHeader } from "../../utils/authentication";
 import { connect } from "react-redux";
 import axios from "axios";
 
