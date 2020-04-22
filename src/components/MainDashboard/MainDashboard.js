@@ -1,26 +1,36 @@
 import React from "react";
-import Budget from "../Budget/Budget";
 import { useState } from "react";
-import BankAccountChart from "react-minimal-pie-chart";
+import axios from "axios";
 import classes from "./MainDashboard.module.css";
 
 function MainDashboard() {
-  const [accounts, setAccounts] = useState([]);
-
-  const handleAccountAdded = (account) => {
-    setAccounts(
-      accounts.concat({
-        title: account.accountType,
-        value: parseInt(account.balance),
-        color: "#" + ((Math.random() * 0xffffff) << 0).toString(16),
-      })
-    );
+  const openPlaid = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.get("http://localhost:3301/plaid");
+      console.log(res.status, res.config.url);
+      if (res.status === 200) {
+        window.location.href = res.config.url;
+      }
+    } catch {
+      console.log("Couldn't go to Plaid for some reason :(");
+    }
   };
 
   return (
     <>
-      <Budget onAccountAdded={handleAccountAdded} />
-      <BankAccountChart data={accounts} />
+      <h4>Link your bank account to Budgetr</h4>
+      <p>
+        We use Plaid to securely link your bank account to this app. For more
+        information about Plaid, click{" "}
+        <a href="https://plaid.com/what-is-plaid/">here</a>.
+      </p>
+      <button
+        onClick={openPlaid}
+        className="waves-effect waves-light btn purple lighten-3"
+      >
+        Link
+      </button>
     </>
   );
 }
