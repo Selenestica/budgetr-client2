@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import classes from "./MainDashboard.module.css";
+import Container from "@material-ui/core/Container";
 
 function MainDashboard() {
   const openPlaid = async (e) => {
@@ -19,18 +20,22 @@ function MainDashboard() {
 
   return (
     <>
-      <h4>Link your bank account to Budgetr</h4>
-      <p>
-        We use Plaid to securely link your bank account to this app. For more
-        information about Plaid, click{" "}
-        <a href="https://plaid.com/what-is-plaid/">here</a>.
-      </p>
-      <button
-        onClick={openPlaid}
-        className="waves-effect waves-light btn purple lighten-3"
-      >
-        Link
-      </button>
+      <Container maxWidth="sm">
+        <div>
+          <h4>Link your bank account to Budgetr</h4>
+          <p>
+            We use Plaid to securely link your bank account to this app. For
+            more information about Plaid, click{" "}
+            <a href="https://plaid.com/what-is-plaid/">here</a>.
+          </p>
+          <button
+            onClick={openPlaid}
+            className="waves-effect waves-light btn purple lighten-3"
+          >
+            Link
+          </button>
+        </div>
+      </Container>
     </>
   );
 }
