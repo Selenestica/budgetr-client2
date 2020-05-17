@@ -7,10 +7,12 @@ import Container from "@material-ui/core/Container";
 function MainDashboard() {
   const openPlaid = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("jsonwebtoken");
     try {
-      const res = await axios.get("http://localhost:3301/plaid");
+      const res = await axios.get("http://localhost:3301/plaid", token);
       console.log(res.status, res.config.url);
       if (res.status === 200) {
+        console.log(res);
         window.location.href = res.config.url;
       }
     } catch {
