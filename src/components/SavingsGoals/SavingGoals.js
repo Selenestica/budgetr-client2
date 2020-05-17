@@ -1,25 +1,56 @@
 import React, { useState, useEffect } from "react";
 import BarChart from "react-horizontal-stacked-bar-chart";
 import classes from "./SavingGoals.module.css";
+import axios from "axios";
 
 function SavingGoals() {
   const [savingsGoals, setSavingsGoals] = useState([]);
+  const [prcntToGoal, setPrcntToGoal] = useState("");
+  const [goalName, setGoalName] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3301/view-savings-goals")
-      .then((response) => response.json())
-      .then((json) => {
-        const savingsGoalsData = json.savings_goals.map((savingsGoal) => {
-          return {
-            name: savingsGoal.name,
-            value: savingsGoal.amount,
-            description: savingsGoal.amount,
-            color: "#" + ((Math.random() * 0xffffff) << 0).toString(16),
-          };
-        });
-
-        setSavingsGoals(savingsGoalsData);
+    async function getSavingsGoals() {
+      const funds = await axios.get(
+        "http://localhost:3301/accountBalances/checking"
+      );
+      const available_funds = parseInt(funds.data[0].available_funds);
+      const res = await axios.get(
+        "http://localhost:3301/savingsGoals/view-savings-goals"
+      );
+      const toGoal = available_funds / res.data.savings_goals[0].amount;
+      const goalName1 = res.data.savings_goals[0].name;
+      setGoalName(goalName1);
+      setPrcntToGoal(toGoal);
+      const savingsGoalsData = res.data.savings_goals.map((savingsGoal) => {
+        return (
+          <div key={savingsGoal.name + savingsGoal}>
+            <BarChart
+              height={50}
+              showTextIn
+              id="new_id"
+              fontColor="rgb(50,20,100)"
+              data={[
+                {
+                  name: null,
+                  value: available_funds,
+                  description: null,
+                  color: "#008000",
+                },
+                {
+                  name: savingsGoal.name,
+                  value: savingsGoal.amount,
+                  description: available_funds + " / " + savingsGoal.amount,
+                  color: "#f8f8f8",
+                },
+              ]}
+            />
+          </div>
+        );
       });
+
+      setSavingsGoals(savingsGoalsData);
+    }
+    getSavingsGoals();
   }, []);
 
   return (
@@ -44,14 +75,10 @@ function SavingGoals() {
 
       <div className={classes.savingGoalsContainer}>
         <h1>Your Goal</h1>
-        <p>(you're almost there!)</p>
-        <BarChart
-          height={50}
-          showTextDown
-          id="new_id"
-          fontColor="rgb(50,20,100)"
-          data={savingsGoals}
-        />
+        <p>
+          You're <b>{prcntToGoal}%</b> of the way to <b>{goalName}</b>
+        </p>
+        {savingsGoals}
       </div>
     </>
   );
